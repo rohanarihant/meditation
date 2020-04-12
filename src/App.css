@@ -1,0 +1,170 @@
+*{
+        margin:0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    html{
+        height: 100%;
+    }
+    body{
+        font-family: 'Segoe UI', sans-serif;;
+        font-size: 1rem;
+        line-height: 1.6;
+        height: 100%;
+    }
+    .header{
+        height: 150px;;
+    }
+    .wrap {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #fafafa;
+    }
+    .login-form{
+        width: 350px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        padding: 2rem;
+        background: #ffffff;
+    }
+    .form-input{
+        background: #fafafa;
+        border: 1px solid #eeeeee;
+        padding: 12px;
+        width: 100%;
+    }
+    .form-group{
+        margin-bottom: 1rem;
+    }
+    .form-button{
+        background: #69d2e7;
+        border: 1px solid #ddd;
+        color: #ffffff;
+        padding: 10px;
+        width: 100%;
+        text-transform: uppercase;
+    }
+    .form-button:hover{
+        background: #69c8e7;
+    }
+    .form-header{
+        text-align: center;
+        margin-bottom : 2rem;
+    }
+    .form-footer{
+        text-align: center;
+    }
+
+    #customers {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      #customers td, #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      
+      #customers tr:nth-child(even){background-color: #f2f2f2;}
+      
+      #customers tr:hover {background-color: #ddd;}
+      
+      #customers th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #4CAF50;
+        color: white;
+      }
+
+      .topnav {
+        overflow: hidden;
+        background-color: #4CAF50;
+      } 
+      .topnav p{
+        text-align: center;
+        color: #fff;
+        font-size: 30px;
+      }
+      .topnav button {
+        float: right;
+        color: #e4d8d8;
+        text-align: center;
+        padding: 20px 40px;
+        text-decoration: none;
+        font-size: 17px;
+        background-color: #333;
+        margin-top: -50px
+      }
+
+      input[type=text], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=button]{
+  width: 100%;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=date]{
+    width: 50%;
+    border: 1px solid #4CAF50;
+    padding: 14px 20px;
+    margin: 8px 0;
+}
+
+input[type=button] {
+  background-color: #45a049;
+}
+
+div {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.margin-right {
+  margin-right: 10px;
+}
+
+.margin-left {
+  margin-left: 10px;
+}
+
+.back-icon {
+  height: 25px;
+    width: 30px;
+}
+
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color:darkred;
+}
+
+.loader-image {
+  height: 100px;
+  width: 100px;
+}
+
+.total-text{
+  font-weight: 600;
+  font-size: 20px;
+}

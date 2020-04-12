@@ -1,0 +1,16 @@
+export const dataJson = [
+    { name: "rohan", phone: "9988776655", date: "21-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "21-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "21-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "21-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "21-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "21-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "21-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "22-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "22-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "22-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "23-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "23-03-2020", duration: "00:30"},
+    { name: "rohan", phone: "9988776655", date: "24-03-2020", duration: "01:30"},
+    { name: "rohan", phone: "9988776655", date: "24-03-2020", duration: "00:10"},
+] 
