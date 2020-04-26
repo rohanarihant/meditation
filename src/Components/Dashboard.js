@@ -129,7 +129,6 @@ class Dashboard extends Component {
     }
     selectGender = (e) => {
         this.setState({selectedGender:e.target.value});
-        console.log(e.target.value,'datdae')
     }
     renderData = (data) => {
         return (

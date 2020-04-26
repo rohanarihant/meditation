@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {ToastsStore} from 'react-toasts';
 
-const ApiUrl = 'http://ec2-18-219-132-44.us-east-2.compute.amazonaws.com:8080';
+const ApiUrl = 'http://bmeditation.herokuapp.com';
 // const ApiUrl = 'http://localhost:8080';
 
 
