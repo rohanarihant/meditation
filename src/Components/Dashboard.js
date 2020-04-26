@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import AuthContext from './AccountContext';
 import { getAllReports, deleteReportApi, updateReportApi } from './apiCalls';
 import EditReport from './editForm';
+import ViewAllUsers from './ViewAllUsers';
 import Loader from './loader';
 
 const currentDate = new Date();
@@ -14,20 +15,26 @@ class Dashboard extends Component {
         editForm: false,
         editData: {},
         loading:false,
+        actUsersScreen:false,
+        screen:'Dashboard',
+        selectedGender:'all'
     };
     static contextType = AuthContext;
 
-    // async componentDidMount(){
-    //     const response = await getAllReports();
-    //     console.log(response,'response')
-    //     this.setState({dataJson:response});
-    // }
+    async componentDidMount(){
+        this.getAllReport(this.state.startDate.split("-"));
+    }
 
     handleChange = async (date) => {
         const formatDate = date.target.value.split("-");
+        this.getAllReport(formatDate);
+    };
+
+    async getAllReport(formatDate){
         try{
             this.setState({loading:true});
             const response = await getAllReports();
+            console.log(response,'response0-9-9')
             this.setState({
                 startDate: `${formatDate[0]}-${formatDate[1][1]}-${formatDate[2]}`,
                 dataJson: response,
@@ -38,8 +45,7 @@ class Dashboard extends Component {
         } catch(e){
             this.setState({loading:false});
         }
-    };
-
+    }
     calculateDuration = () => {
         let formatDuration = 0;
         let hours = 0;
@@ -64,9 +70,12 @@ class Dashboard extends Component {
         window.location.reload();
     }
     editReport = (data, e) => {
+        let {screen, actUsersScreen} = this.state;
+        screen = screen === 'EditScreen' ? "Dashboard" : "EditScreen";
         this.setState({
             editForm: !this.state.editForm,
             editData: data,
+            screen
         });
     }
     updateEditData = (e) => {
@@ -76,60 +85,124 @@ class Dashboard extends Component {
         this.setState({ editData });
     }
     deleteReport = async (id, e) => {
-        await deleteReportApi(id);
-        // window.location.reload();
-        const response = await getAllReports();
-        this.setState({
-            dataJson: response
-        }, () => {
-            this.calculateDuration();
-        });
-    }
-    updateReport = async () => {
-        const { editData } = this.state;
-        await updateReportApi(editData.id, editData);
-        setTimeout( async() => {
+        try{
+            this.setState({loading:true});
+            await deleteReportApi(id);
+            // window.location.reload();
             const response = await getAllReports();
             this.setState({
-                dataJson: response,
-                editForm: false,
+                dataJson: response
             }, () => {
                 this.calculateDuration();
             });
-        },1000);
+            this.setState({loading:false});
+        } catch(err){
+            this.setState({loading:false});
+        }
+    }
+    updateReport = async () => {
+        try{
+            this.setState({loading:true});
+            const { editData } = this.state;
+            await updateReportApi(editData.id, editData);
+            setTimeout( async() => {
+                const response = await getAllReports();
+                this.setState({
+                    dataJson: response,
+                    editForm: false,
+                }, () => {
+                    this.calculateDuration();
+                });
+                this.setState({loading:false});
+            },1000);
+        } catch(err){
+            this.setState({loading:false});
+        }
     }
     toggleEditReport = () => {
-        this.setState({editForm: false});
+        this.setState({editForm: false, screen: 'Dashboard'});
     }
-    render() {
-        let { startDate, totalDuration, dataJson, editForm, editData, loading } = this.state;
+    toggleActUsers = () => {
+        let {screen, actUsersScreen} = this.state;
+        screen = screen === 'ActivateUsers' ? "Dashboard" : "ActivateUsers";
+        this.setState({actUsersScreen: !actUsersScreen, screen});
+    }
+    selectGender = (e) => {
+        this.setState({selectedGender:e.target.value});
+        console.log(e.target.value,'datdae')
+    }
+    renderData = (data) => {
         return (
-            <div>
-                {loading && <Loader /> }
-                <div class="topnav">
-                    {editForm && <img className="back-icon" src="./back.jpeg" onClick={this.toggleEditReport} />}
-                    <p>{`Meditation Report :- ${startDate}`}</p>
-                    <button onClick={this.logOut}>Logout</button>
-                </div>
-                {editForm ? <EditReport editData={editData} updateEditData={this.updateEditData} updateReport={this.updateReport} />
-                    :
-                    <div>
-                        <input type="date" value={startDate} onChange={data => this.handleChange(data)} dateformat="d M y" />
-                        <table id="customers">
-                            <tr>
-                                <th>Name</th>
-                                <th>Phone</th>
-                                <th>Date</th>
-                                <th>Duration</th>
-                                <th>Actions</th>
-                            </tr>
-                            {dataJson && dataJson.map((data, i) => {
-                                if (startDate === data.data) {
+            <tr>
+                <td>{data.name}</td>
+                <td>{data.phone}</td>
+                <td>{data.data}</td>
+                <td>{data.gender}</td>
+                <td>{data.startTime}</td>
+                <td>{data.endTime}</td>
+                <td>{data.duration.substr(0,5)}</td>
+                <td>
+                    <img className="margin-right" src="./edit.svg" onClick={this.editReport.bind(this, data)} />
+                    <img className="margin-left" src="./delete.svg" onClick={this.deleteReport.bind(this, data.id)} />
+                </td>
+            </tr>
+        )
+    }
+    renderScreen(){
+        let { startDate, totalDuration, dataJson, editForm, editData, loading, actUsersScreen, screen, selectedGender } = this.state
+        switch(screen){
+            case('ActivateUsers'):
+            return ( <ViewAllUsers editData={editData} updateEditData={this.updateEditData} updateReport={this.updateReport} /> );
+            case('EditScreen'):
+            return ( <EditReport editData={editData} updateEditData={this.updateEditData} updateReport={this.updateReport} /> );
+            default:
+                return(       
+                <div>
+                    <input type="date" value={startDate} onChange={data => this.handleChange(data)} dateformat="d M y" />
+                    <select className="gender-selection" onChange={data => this.selectGender(data)} >
+                        <option>all</option>
+                        <option>male</option>
+                        <option>female</option>
+                    </select>
+                    <button className="activate-button" onClick={this.toggleActUsers}>Activate Users</button>
+                    <table id="customers">
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Date</th>
+                            <th>Gender</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Duration</th>
+                            <th>Actions</th>
+                        </tr>
+                        {dataJson && dataJson.map((data, i) => {
+                            if (startDate === data.data) {
+                                if(selectedGender === data.gender){
                                     return (
                                         <tr>
                                             <td>{data.name}</td>
                                             <td>{data.phone}</td>
                                             <td>{data.data}</td>
+                                            <td>{data.gender}</td>
+                                            <td>{data.startTime}</td>
+                                            <td>{data.endTime}</td>
+                                            <td>{data.duration.substr(0,5)}</td>
+                                            <td>
+                                                <img className="margin-right" src="./edit.svg" onClick={this.editReport.bind(this, data)} />
+                                                <img className="margin-left" src="./delete.svg" onClick={this.deleteReport.bind(this, data.id)} />
+                                            </td>
+                                        </tr>
+                                    )
+                                }else if(selectedGender === 'all'){
+                                    return (
+                                        <tr>
+                                            <td>{data.name}</td>
+                                            <td>{data.phone}</td>
+                                            <td>{data.data}</td>
+                                            <td>{data.gender}</td>
+                                            <td>{data.startTime}</td>
+                                            <td>{data.endTime}</td>
                                             <td>{data.duration.substr(0,5)}</td>
                                             <td>
                                                 <img className="margin-right" src="./edit.svg" onClick={this.editReport.bind(this, data)} />
@@ -139,16 +212,33 @@ class Dashboard extends Component {
                                     )
                                 }
                             }
-                            )}
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td className="total-text">Total Hours</td>
-                                <td className="total-text">{totalDuration}</td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </div>}
+                        }
+                        )}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td className="total-text">Total Hours</td>
+                            <td className="total-text">{totalDuration}</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div> )
+    }
+}
+    render() {
+        let { startDate, totalDuration, dataJson, editForm, editData, loading,screen, actUsersScreen } = this.state;
+        return (
+            <div>
+                {loading && <Loader /> }
+                <div class="topnav">
+                    {screen !== 'Dashboard' && <img className="back-icon" src="./back.jpeg" onClick={this.toggleEditReport} />}
+                    <p>{`Meditation Report :- ${startDate}`}</p>
+                    <button onClick={this.logOut}>Logout</button>
+                </div>
+                    {this.renderScreen()}
             </div>
         )
     }

@@ -2,14 +2,18 @@ import axios from 'axios';
 import {ToastsStore} from 'react-toasts';
 
 const ApiUrl = 'http://ec2-18-219-132-44.us-east-2.compute.amazonaws.com:8080';
+// const ApiUrl = 'http://localhost:8080';
 
 
 const loginCredentials = {
-        "phoneOrEmail": "RohitBangaloreMeditationApp@gmail.com",
+        "phoneOrEmail": "9741930304",
         "password": "9988776655"
     }
     const options = {
         'content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': '"Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"',
         'Authorization': `Bearer ${sessionStorage.getItem('apiToken')}`
     }
 export function getAllReports(){
@@ -51,5 +55,28 @@ export function updateReportApi(id,editData){
     }).catch(error => {
         ToastsStore.error("error while updating the Report")
     })
+}
+
+export function getAllUsers(){
+
+    return axios({ method: 'GET', url: `${ApiUrl}/api/users/allReports`, headers: options })
+    .then( async(res) => {
+        console.log(res,'response');
+      const dataJson = await res.data.content;
+      return dataJson;
+    //   this.setState({ dataJson });
+    }).catch(error => {
+        // console.log(error,'error');
+    });
+}
+
+export function activateUser(phone){
+
+    return axios({ method: 'PUT', url: `${ApiUrl}/api/users/activate/${phone}`, headers: options })
+    .then( async(res) => {
+        console.log(res,'response');
+    }).catch(error => {
+        console.log(error,'error');
+    });
 }
 

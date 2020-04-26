@@ -134,8 +134,8 @@ input[type=button] {
 
 div {
   border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
+  /* background-color: #f2f2f2;
+  padding: 20px; */
 }
 
 .margin-right {
@@ -167,4 +167,20 @@ div {
 .total-text{
   font-weight: 600;
   font-size: 20px;
+}
+
+.activate-button{
+  height: 45px;
+  width: 100px;
+  color: #fff;
+  background-color: #45a049;
+  float: right;
+}
+
+.gender-selection{
+  width: 100px;
+  height: 45px;
+  margin-left: 20px;
+  font-size: 15px;
+  border-color: #45a049;
 }
