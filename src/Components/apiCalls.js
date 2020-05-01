@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {ToastsStore} from 'react-toasts';
 
-const ApiUrl = 'http://bmeditation.herokuapp.com';
+const ApiUrl = 'https://bmeditation.herokuapp.com';
 // const ApiUrl = 'http://localhost:8080';
 
 
@@ -59,7 +59,7 @@ export function updateReportApi(id,editData){
 
 export function getAllUsers(){
 
-    return axios({ method: 'GET', url: `${ApiUrl}/api/users/allReports`, headers: options })
+    return axios({ method: 'GET', url: `${ApiUrl}/api/users/allUsers`, headers: options })
     .then( async(res) => {
         console.log(res,'response');
       const dataJson = await res.data.content;
