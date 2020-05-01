@@ -10,11 +10,15 @@ export default class ViewAllUsers extends Component {
         this.fetchAllUsers();
     }
     async fetchAllUsers(){
+        this.props.toggleLoader();
         const response = await getAllUsers();
         this.setState({allUsers:response});
+        this.props.toggleLoader();
     }
     async handleChange(phone) {
+        this.props.toggleLoader();
         await activateUser(phone);
+        this.props.toggleLoader();
         this.fetchAllUsers();
     }
     render() {

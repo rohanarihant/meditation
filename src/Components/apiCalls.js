@@ -61,7 +61,6 @@ export function getAllUsers(){
 
     return axios({ method: 'GET', url: `${ApiUrl}/api/users/allUsers`, headers: options })
     .then( async(res) => {
-        console.log(res,'response');
       const dataJson = await res.data.content;
       return dataJson;
     //   this.setState({ dataJson });
@@ -74,9 +73,9 @@ export function activateUser(phone){
 
     return axios({ method: 'PUT', url: `${ApiUrl}/api/users/activate/${phone}`, headers: options })
     .then( async(res) => {
-        console.log(res,'response');
+        // console.log('response');
     }).catch(error => {
-        console.log(error,'error');
+        // console.log('error');
     });
 }
 

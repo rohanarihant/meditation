@@ -34,9 +34,11 @@ class Dashboard extends Component {
         try{
             this.setState({loading:true});
             const response = await getAllReports();
-            console.log(response,'response0-9-9')
+            const filterDate = dat => {
+                return dat.length > 1 ? dat[1] : dat;
+            }
             this.setState({
-                startDate: `${formatDate[0]}-${formatDate[1][1]}-${formatDate[2]}`,
+                startDate: `${formatDate[0]}-${filterDate(formatDate[1])}-${filterDate(formatDate[2])}`,
                 dataJson: response,
                 loading:false,
             }, () => {
@@ -130,6 +132,9 @@ class Dashboard extends Component {
     selectGender = (e) => {
         this.setState({selectedGender:e.target.value});
     }
+    toggleLoader = e => {
+        this.setState({loading: !this.state.loading});
+    }
     renderData = (data) => {
         return (
             <tr>
@@ -151,7 +156,7 @@ class Dashboard extends Component {
         let { startDate, totalDuration, dataJson, editForm, editData, loading, actUsersScreen, screen, selectedGender } = this.state
         switch(screen){
             case('ActivateUsers'):
-            return ( <ViewAllUsers editData={editData} updateEditData={this.updateEditData} updateReport={this.updateReport} /> );
+            return ( <ViewAllUsers editData={editData} toggleLoader={this.toggleLoader} updateEditData={this.updateEditData} updateReport={this.updateReport} /> );
             case('EditScreen'):
             return ( <EditReport editData={editData} updateEditData={this.updateEditData} updateReport={this.updateReport} /> );
             default:
