@@ -142,6 +142,10 @@ div {
   margin-right: 10px;
 }
 
+.update-password {
+  margin: 0px 20px;
+}
+
 .margin-left {
   margin-left: 10px;
 }
@@ -175,6 +179,7 @@ div {
   color: #fff;
   background-color: #45a049;
   float: right;
+  margin: 10px;
 }
 
 .gender-selection{
@@ -182,5 +187,12 @@ div {
   height: 45px;
   margin-left: 20px;
   font-size: 15px;
+  border-color: #45a049;
+}
+
+.update-button{
+  margin-left: 10px;
+  height: 40px;
+  width: 50px;
   border-color: #45a049;
 }

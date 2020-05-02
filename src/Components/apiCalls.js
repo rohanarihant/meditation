@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {ToastsStore} from 'react-toasts';
 
-const ApiUrl = 'https://bmeditation.herokuapp.com';
-// const ApiUrl = 'http://localhost:8080';
+// const ApiUrl = 'https://bmeditation.herokuapp.com';
+const ApiUrl = 'http://localhost:8080';
 
 
 const loginCredentials = {
@@ -16,9 +16,9 @@ const loginCredentials = {
         'Access-Control-Allow-Headers': '"Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"',
         'Authorization': `Bearer ${sessionStorage.getItem('apiToken')}`
     }
-export function getAllReports(){
+export function getAllReports(date){
 
-    return axios({ method: 'GET', url: `${ApiUrl}/api/report`, headers: options })
+    return axios({ method: 'GET', url: `${ApiUrl}/api/report/data/${date}`, headers: options })
     .then( async(res) => {
       const dataJson = await res.data.content;
       return dataJson;
@@ -54,6 +54,16 @@ export function updateReportApi(id,editData){
         return res;
     }).catch(error => {
         ToastsStore.error("error while updating the Report")
+    })
+}
+
+export function updatePassword(data){
+    axios.put(`${ApiUrl}/api/users/updatePassword/${data.phone}`, data, {headers: options}, )
+    .then(res => {
+        ToastsStore.success("Password Updated Sucessfully")
+        return res;
+    }).catch(error => {
+        ToastsStore.error("error while updating the Password")
     })
 }
 

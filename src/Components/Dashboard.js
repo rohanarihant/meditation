@@ -3,20 +3,22 @@ import AuthContext from './AccountContext';
 import { getAllReports, deleteReportApi, updateReportApi } from './apiCalls';
 import EditReport from './editForm';
 import ViewAllUsers from './ViewAllUsers';
+import PendingReports from './PendingReports';
+import RecievedReports from './RecievedReports';
 import Loader from './loader';
 
 const currentDate = new Date();
 
 class Dashboard extends Component {
     state = {
-        startDate: `${currentDate.getFullYear()}-${Number(currentDate.getMonth()) + 1 < 10 ? '0'+ Number(currentDate.getMonth() + 1) : Number(currentDate.getMonth() + 1)}-${currentDate.getDate()}`,
+        startDate: `${currentDate.getFullYear()}-${Number(currentDate.getMonth()) + 1}-${currentDate.getDate()}`,
         totalDuration: 0,
         dataJson: [],
         editForm: false,
         editData: {},
         loading:false,
         actUsersScreen:false,
-        screen:'Dashboard',
+        screen:'SubmittedReport',
         selectedGender:'all'
     };
     static contextType = AuthContext;
@@ -33,10 +35,10 @@ class Dashboard extends Component {
     async getAllReport(formatDate){
         try{
             this.setState({loading:true});
-            const response = await getAllReports();
             const filterDate = dat => {
                 return dat.length > 1 ? dat[1] : dat;
             }
+            const response = await getAllReports(`${formatDate[0]}-${filterDate(formatDate[1])}-${filterDate(formatDate[2])}`);
             this.setState({
                 startDate: `${formatDate[0]}-${filterDate(formatDate[1])}-${filterDate(formatDate[2])}`,
                 dataJson: response,
@@ -73,7 +75,7 @@ class Dashboard extends Component {
     }
     editReport = (data, e) => {
         let {screen, actUsersScreen} = this.state;
-        screen = screen === 'EditScreen' ? "Dashboard" : "EditScreen";
+        screen = screen === 'EditScreen' ? "SubmittedReport" : "EditScreen";
         this.setState({
             editForm: !this.state.editForm,
             editData: data,
@@ -91,7 +93,7 @@ class Dashboard extends Component {
             this.setState({loading:true});
             await deleteReportApi(id);
             // window.location.reload();
-            const response = await getAllReports();
+            const response = await getAllReports(this.state.startDate);
             this.setState({
                 dataJson: response
             }, () => {
@@ -108,7 +110,7 @@ class Dashboard extends Component {
             const { editData } = this.state;
             await updateReportApi(editData.id, editData);
             setTimeout( async() => {
-                const response = await getAllReports();
+                const response = await getAllReports(this.state.startDate);
                 this.setState({
                     dataJson: response,
                     editForm: false,
@@ -122,18 +124,28 @@ class Dashboard extends Component {
         }
     }
     toggleEditReport = () => {
-        this.setState({editForm: false, screen: 'Dashboard'});
+        this.setState({editForm: false, screen: 'SubmittedReport'});
     }
     toggleActUsers = () => {
         let {screen, actUsersScreen} = this.state;
-        screen = screen === 'ActivateUsers' ? "Dashboard" : "ActivateUsers";
+        screen = screen === 'ActivateUsers' ? "SubmittedReport" : "ActivateUsers";
+        this.setState({actUsersScreen: !actUsersScreen, screen});
+    }
+    toggleRecScreen = () => {
+        let {screen, actUsersScreen} = this.state;
+        screen = screen === 'RecievedReports' ? "SubmittedReport" : "RecievedReports";
+        this.setState({screen});
+    }
+    togglePendingReports = () => {
+        let {screen, actUsersScreen} = this.state;
+        screen = screen === 'PendingReports' ? "SubmittedReport" : "PendingReports";
         this.setState({actUsersScreen: !actUsersScreen, screen});
     }
     selectGender = (e) => {
         this.setState({selectedGender:e.target.value});
     }
-    toggleLoader = e => {
-        this.setState({loading: !this.state.loading});
+    toggleLoader = flag => {
+        this.setState({loading: flag});
     }
     renderData = (data) => {
         return (
@@ -155,6 +167,10 @@ class Dashboard extends Component {
     renderScreen(){
         let { startDate, totalDuration, dataJson, editForm, editData, loading, actUsersScreen, screen, selectedGender } = this.state
         switch(screen){
+            case('RecievedReports'):
+            return ( <RecievedReports editData={editData} toggleLoader={this.toggleLoader} startDate={startDate} updateEditData={this.updateEditData} updateReport={this.updateReport} /> );
+            case('PendingReports'):
+            return ( <PendingReports editData={editData} toggleLoader={this.toggleLoader} startDate={startDate} updateEditData={this.updateEditData} updateReport={this.updateReport} /> );
             case('ActivateUsers'):
             return ( <ViewAllUsers editData={editData} toggleLoader={this.toggleLoader} updateEditData={this.updateEditData} updateReport={this.updateReport} /> );
             case('EditScreen'):
@@ -169,8 +185,11 @@ class Dashboard extends Component {
                         <option>female</option>
                     </select>
                     <button className="activate-button" onClick={this.toggleActUsers}>Activate Users</button>
+                    <button className="activate-button" onClick={this.togglePendingReports}>Pending Reports</button>
+                    <button className="activate-button" onClick={this.toggleRecScreen}>Received Reports</button>
                     <table id="customers">
                         <tr>
+                            <th>S No</th>
                             <th>Name</th>
                             <th>Phone</th>
                             <th>Date</th>
@@ -185,12 +204,13 @@ class Dashboard extends Component {
                                 if(selectedGender === data.gender){
                                     return (
                                         <tr>
+                                            <td>{i+1}</td>
                                             <td>{data.name}</td>
                                             <td>{data.phone}</td>
                                             <td>{data.data}</td>
                                             <td>{data.gender}</td>
-                                            <td>{data.startTime}</td>
-                                            <td>{data.endTime}</td>
+                                            <td>{data.startTime.split(" ")[1]}</td>
+                                            <td>{data.endTime.split(" ")[1]}</td>
                                             <td>{data.duration.substr(0,5)}</td>
                                             <td>
                                                 <img className="margin-right" src="./edit.svg" onClick={this.editReport.bind(this, data)} />
@@ -201,12 +221,13 @@ class Dashboard extends Component {
                                 }else if(selectedGender === 'all'){
                                     return (
                                         <tr>
+                                            <td>{i+1}</td>
                                             <td>{data.name}</td>
                                             <td>{data.phone}</td>
                                             <td>{data.data}</td>
                                             <td>{data.gender}</td>
-                                            <td>{data.startTime}</td>
-                                            <td>{data.endTime}</td>
+                                            <td>{data.startTime.split(" ")[1]}</td>
+                                            <td>{data.endTime.split(" ")[1]}</td>
                                             <td>{data.duration.substr(0,5)}</td>
                                             <td>
                                                 <img className="margin-right" src="./edit.svg" onClick={this.editReport.bind(this, data)} />
@@ -219,6 +240,7 @@ class Dashboard extends Component {
                         }
                         )}
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -238,8 +260,10 @@ class Dashboard extends Component {
             <div>
                 {loading && <Loader /> }
                 <div class="topnav">
-                    {screen !== 'Dashboard' && <img className="back-icon" src="./back.jpeg" onClick={this.toggleEditReport} />}
+                    {screen !== 'SubmittedReport' && <img className="back-icon" src="./back.jpeg" onClick={this.toggleEditReport} />}
                     <p>{`Meditation Report :- ${startDate}`}</p>
+                    <p>{`${screen}`}</p>
+                    
                     <button onClick={this.logOut}>Logout</button>
                 </div>
                     {this.renderScreen()}
