@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {ToastsStore} from 'react-toasts';
 
-// const ApiUrl = 'https://bmeditation.herokuapp.com';
-const ApiUrl = 'http://localhost:8080';
+const ApiUrl = 'https://bmeditation.herokuapp.com';
+// const ApiUrl = 'http://localhost:8080';
 
 
 const loginCredentials = {
